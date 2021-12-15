@@ -22,6 +22,21 @@ contract ERC721 {
     //mapping from owner to number of owned tokens
     mapping(address => uint256) private _numberOwnedTokens;
 
+    // return the number of NFTs owned by _owner
+    function balanceOf(address _owner) public view returns(uint256) {
+        require(_owner != address(0), "ERC721: the owner address cannot be 0");
+
+        return _numberOwnedTokens[_owner];
+    }
+
+    // returns the address of the owner of the NFT
+    function ownerOf(uint256 _tokenId) public view returns(address) {
+        address owner = _tokenOwner[_tokenId];
+        require(owner != address(0), "ERC721: the owner address cannot be 0");
+
+        return owner;
+    }
+
     function _exists(uint256 tokenId) internal view returns(bool) {
         //setting the address of nft owner to check the mapping of the address 
         //from tokenOwner to tokenId
@@ -29,7 +44,8 @@ contract ERC721 {
         return owner != address(0);
     }
 
-    function _mint(address to, uint256 tokenId) internal {
+    // virtual need to override function in inheritance
+    function _mint(address to, uint256 tokenId) internal virtual {
         require(to != address(0), "ERC721: the mint address cannot be 0");
 
         //require that the token has not already been minted

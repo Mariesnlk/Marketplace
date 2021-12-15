@@ -3,9 +3,9 @@ pragma solidity ^0.8.0;
 
 // ./ - the same directory
 import './ERC721Metadata.sol';
-import './ERC721.sol';
+import './ERC721Enumerable.sol';
 
-contract ERC721Connector is ERC721Matadata, ERC721 {
+contract ERC721Connector is ERC721Matadata, ERC721Enumerable {
 
     //carry the metadata into over
 
