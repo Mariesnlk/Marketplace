@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import './ERC721.sol';
+import "./interfaces/IERC721Enumerable.sol";
 
-contract ERC721Enumerable is ERC721 {
+contract ERC721Enumerable is ERC721, IERC721Enumerable {
 
     uint256[] private _allTokens;
 
@@ -15,6 +16,11 @@ contract ERC721Enumerable is ERC721 {
 
     //mapping from token id index of the owner tokens list
     mapping(uint256 => uint256) private _ownedTokensIndex;
+
+    constructor() {
+        _registerInterface(bytes4(keccak256('totalSupply(bytes4)')^
+        keccak256('tokenByIndex(bytes4)')^keccak256('tokenOfOwnerByIndex(bytes4)')));
+    }
 
     // return a count of valid NFTs tracked by this contract, where each one of
     // them has an assigned and queryable owner not equal to the zero address
@@ -29,24 +35,43 @@ contract ERC721Enumerable is ERC721 {
     // `_owner` is the zero address, representing invalid NFTs.
     //function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256);
 
-    function _addTokensToTotalSupply(uint256 tokenId) private {
-        
+    //add tokens to the _allTokens array and set the position
+    // of  the tokens indexes
+    function _addTokensToEnumeration(uint256 tokenId) private {
+        _allTokensIndex[tokenId] = _allTokens.length;
         _allTokens.push(tokenId);
     }
 
-    function totalSupply() public view returns(uint256) {
+    function _addTokensToOwnerEnumeration(address owner, uint256 tokenId) private {
+        //add address and tokenId to the _ownedTokensIds
+        //_ownedTokensIndex tokenId set to address of _ownedTokensIds
+        _ownedTokensIndex[tokenId] = _ownedTokensIds[owner].length;
+        _ownedTokensIds[owner].push(tokenId);
+
+    }
+
+    function totalSupply() public override view returns(uint256) {
         return _allTokens.length; 
     }
 
+    function tokenByIndex(uint256 index) public override view returns(uint256) {
+        require(index < totalSupply(), "ERC721Enumerable - index is out of bounds!");
+        return _allTokens[index];
+    }
+
+    function tokenOfOwnerByIndex(address owner, uint256 index) public override view returns(uint256) {
+        require(index < balanceOf(owner), "ERC721Enumeration - owner index ia out of bounds!");
+        return _ownedTokensIds[owner][index];
+    }
+ 
     function _mint(address to, uint256 tokenId) internal override(ERC721) {
         super._mint(to, tokenId);
         
         //add tokens yo the owner
-        _addTokensToTotalSupply(tokenId);
-
         //all tokens to totalSupply = to allTokens
+        _addTokensToEnumeration(tokenId);
+        _addTokensToOwnerEnumeration(to, tokenId);
         
-
     }
 
 }
