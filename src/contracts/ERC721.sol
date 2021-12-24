@@ -26,12 +26,15 @@ contract ERC721 is ERC165, IERC721 {
     //mapping from token id to approved addresses
     mapping(uint256 => address) private _tokenApprovals;
 
-
     constructor() {
-        _registerInterface(bytes4(keccak256('balanceOf(bytes4)')^
-        keccak256('ownerOf(bytes4)')^keccak256('transferFrom(bytes4)')));
+        _registerInterface(
+            bytes4(
+                keccak256("balanceOf(bytes4)") ^
+                    keccak256("ownerOf(bytes4)") ^
+                    keccak256("transferFrom(bytes4)")
+            )
+        );
     }
-
 
     // return the number of NFTs owned by _owner
     function balanceOf(address _owner) public view override returns (uint256) {
@@ -97,6 +100,10 @@ contract ERC721 is ERC165, IERC721 {
         return (_spender == owner || getApproved(_tokenId) == _spender);
     }
 
+    function isApprovedAddress(address _owner, uint256 _tokenId) public view returns (bool){
+        return isApprovedOrOwner(_owner, _tokenId);
+    }
+
     //get the approved address for a single NFT
     // returns the approved address for this NFT, or the zero address if there is none
     function getApproved(uint256 _tokenId) public view returns (address) {
@@ -112,19 +119,25 @@ contract ERC721 is ERC165, IERC721 {
         address _to,
         uint256 _tokenId
     ) internal {
-        require(
-            _to != address(0),
-            "Error - ERC721 Transfer to the zero address"
-        );
+        //require that the address receiving a token is not a zero address
+        require(_to != address(0), "ERC721 - transfer to the zero address");
+        //require that the address transfering the token actually owns the token
         require(
             ownerOf(_tokenId) == _from,
-            "Trying to transfer a token the address does not own!"
+            "ERC721 - trying to transfer a token the address does not own!"
         );
 
         // _numberOwnedTokens[_from].decrement();
         // _numberOwnedTokens[_to].increment();
 
+        //add the token id to the address receiving the token
         _tokenOwner[_tokenId] = _to;
+
+        //update the balance of the address _from token
+        _numberOwnedTokens[_from] -= 1;
+
+        //update the balance of the address _to
+        _numberOwnedTokens[_to] += 1;
 
         emit Transfer(_from, _to, _tokenId);
     }
@@ -133,7 +146,7 @@ contract ERC721 is ERC165, IERC721 {
         address _from,
         address _to,
         uint256 _tokenId
-    ) override public {
+    ) public override {
         require(isApprovedOrOwner(msg.sender, _tokenId));
         _transferFrom(_from, _to, _tokenId);
     }
