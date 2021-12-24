@@ -1,19 +1,19 @@
 const { assert } = require('chai')
 
 
-const KryptoBird = artifacts.require('./KryptoBird');
+const KryptoPaint = artifacts.require('./KryptoPaint');
 
 //chack for chai 
 require('chai')
     .use(require('chai-as-promised'))
     .should()
 
-contract('KryptoBird', (accounts) => {
+contract('KryptoPaint', (accounts) => {
 
     let contract
 
     before(async () => {
-        contract = await KryptoBird.deployed()
+        contract = await KryptoPaint.deployed()
     })
 
     //testing container - describe

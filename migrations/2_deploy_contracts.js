@@ -1,6 +1,6 @@
-const KryptoBird = artifacts.require("KryptoBird");
+const KryptoPaint = artifacts.require("KryptoPaint");
 
 //to deploy is run to anonym funct 
 module.exports = function(deployer) {
-    deployer.deploy(KryptoBird);
+    deployer.deploy(KryptoPaint);
 };

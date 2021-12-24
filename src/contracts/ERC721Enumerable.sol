@@ -67,7 +67,7 @@ contract ERC721Enumerable is ERC721, IERC721Enumerable {
     function _mint(address to, uint256 tokenId) internal override(ERC721) {
         super._mint(to, tokenId);
         
-        //add tokens yo the owner
+        //add tokens to the owner
         //all tokens to totalSupply = to allTokens
         _addTokensToEnumeration(tokenId);
         _addTokensToOwnerEnumeration(to, tokenId);
