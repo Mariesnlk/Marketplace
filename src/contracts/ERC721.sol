@@ -3,25 +3,17 @@ pragma solidity ^0.8.0;
 
 import "./ERC165.sol";
 import "./interfaces/IERC721.sol";
-
-/*
-
-minting function:
-1. nft to point to an address
-2. keep track of the token ids
-3. keep track of token owner addresses to token ids
-4. keep track how many tokens an owner has
-5. create an event that emints a transfer log  -
-    contract address, where it is being minted to, the id
-
-*/
+import "./libraries/Counters.sol";
 
 contract ERC721 is ERC165, IERC721 {
+    using Counters for Counters.Counter;
+    using SafeMath for uint256;
+
     //mapping from token id to the owner
     mapping(uint256 => address) private _tokenOwner;
 
     //mapping from owner to number of owned tokens
-    mapping(address => uint256) private _numberOwnedTokens;
+    mapping(address => Counters.Counter) private _numberOwnedTokens;
 
     //mapping from token id to approved addresses
     mapping(uint256 => address) private _tokenApprovals;
@@ -40,7 +32,8 @@ contract ERC721 is ERC165, IERC721 {
     function balanceOf(address _owner) public view override returns (uint256) {
         require(_owner != address(0), "ERC721: the owner address cannot be 0");
 
-        return _numberOwnedTokens[_owner];
+        //return _numberOwnedTokens[_owner];
+        return _numberOwnedTokens[_owner].current();
     }
 
     // returns the address of the owner of the NFT
@@ -68,7 +61,8 @@ contract ERC721 is ERC165, IERC721 {
         //who owns which token
         //add a new address with tokenId for minting
         _tokenOwner[_tokenId] = _to;
-        _numberOwnedTokens[_to] += 1;
+        // _numberOwnedTokens[_to] += 1;
+        _numberOwnedTokens[_to].increment();
 
         emit Transfer(address(0), _to, _tokenId);
     }
@@ -100,7 +94,11 @@ contract ERC721 is ERC165, IERC721 {
         return (_spender == owner || getApproved(_tokenId) == _spender);
     }
 
-    function isApprovedAddress(address _owner, uint256 _tokenId) public view returns (bool){
+    function isApprovedAddress(address _owner, uint256 _tokenId)
+        public
+        view
+        returns (bool)
+    {
         return isApprovedOrOwner(_owner, _tokenId);
     }
 
@@ -127,17 +125,17 @@ contract ERC721 is ERC165, IERC721 {
             "ERC721 - trying to transfer a token the address does not own!"
         );
 
-        // _numberOwnedTokens[_from].decrement();
-        // _numberOwnedTokens[_to].increment();
-
         //add the token id to the address receiving the token
         _tokenOwner[_tokenId] = _to;
 
         //update the balance of the address _from token
-        _numberOwnedTokens[_from] -= 1;
+        //_numberOwnedTokens[_from] -= 1;
 
         //update the balance of the address _to
-        _numberOwnedTokens[_to] += 1;
+        //_numberOwnedTokens[_to] += 1;
+
+        _numberOwnedTokens[_from].decrement();
+        _numberOwnedTokens[_to].increment();
 
         emit Transfer(_from, _to, _tokenId);
     }
