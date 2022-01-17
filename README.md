@@ -1,6 +1,8 @@
-# nft-marketplace-starter-kit
-Please run npm install on the terminal to download the appropriate packages already defined to the package.json file. 
-Make sure you are in the source file. 
+# Marketplace - KryptoPintz
+- NFT tools: Solidity, Javascript, React, Truffle & Web3
+- ERC165 ERC20 and ERC721
+- Migrating and updating NFT Smart Contracts with Truffle
+- Complete Suite Unit Testing With Mocha 
 
 **Please ensure you have downloaded the following additionally **
 
@@ -12,8 +14,6 @@ Make sure you are in the source file.
 
 For truffle tests and console please consult the official Truffle documentaion for updates.
 
-Follow the course module on Udemy to build this project from the ground up:
-https://www.udemy.com/course/the-complete-solidity-course-blockchain-zero-to-expert/
 
-Good luck and have fun!
+
 
