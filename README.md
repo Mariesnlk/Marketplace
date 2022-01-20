@@ -2,7 +2,7 @@
 - NFT tools: Solidity, Javascript, React, Truffle & Web3
 - ERC165 ERC20 and ERC721
 - Migrating and updating NFT Smart Contracts with Truffle
-- Complete Suite Unit Testing With Mocha 
+- Complete Suite Unit Testing With Mocha
 
 **Please ensure you have downloaded the following additionally **
 
@@ -13,6 +13,18 @@
 **To run the development server on a local host scripts:** npm run start
 
 For truffle tests and console please consult the official Truffle documentaion for updates.
+
+**To deploy contract in Ganache**
+
+To deploy your smart contract first of all you should run Ganache locally
+
+```
+truffle compile
+truffle migrate --reset
+
+```
+
+All imgs are stored here https://imgbb.com/
 
 
 
